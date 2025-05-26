@@ -1,17 +1,17 @@
-# ?? Seen E-Commerce: Full Data Science & ML Project Suite
+# 🧠 Seen E-Commerce: Full Data Science & ML Project Suite
 
 This document includes:
 
-1. ?? **Full BI Project Overview** � A complete business analysis of Seen E-Commerce using SQL, Power BI, and Streamlit.
-2. ?? **Sentiment Analysis** � A machine learning model that classifies English reviews into positive or negative sentiment.
-3. ?? **Return Status Prediction** � A predictive model for classifying return statuses of e-commerce orders.
-4. ?? Web App and Presentation Access
+1. 📊 **Full BI Project Overview** – A complete business analysis of Seen E-Commerce using SQL, Power BI, and Streamlit.
+2. 🎯 **Sentiment Analysis** – A machine learning model that classifies English reviews into positive or negative sentiment.
+3. 🔄 **Return Status Prediction** – A predictive model for classifying return statuses of e-commerce orders.
+4. 🌐 Web App and Presentation Access
 
 ---
 
-## ?? Project 1: Seen E-Commerce Full BI Analysis
+## 📍 Project 1: Seen E-Commerce Full BI Analysis
 
-### ?? Table of Contents
+### 📦 Table of Contents
 1. [About the Company](#about-the-company)  
 2. [Problem Overview & Stakeholders](#problem-overview--stakeholders)  
 3. [Business Objectives](#business-objectives)  
@@ -21,17 +21,17 @@ This document includes:
 7. [Dashboard Insights](#dashboard-insights)  
 8. [Recommendations Summary](#recommendations-summary)  
 
-### ?? About the Company
+### 🏢 About the Company
 Seen is a rapidly growing Egyptian e-commerce business operating for the last three years. With increasing competition and operational complexity, Seen is leveraging data analytics to guide smarter decision-making across sales, logistics, customer experience, and marketing.
 
-### ? Problem Overview & Stakeholders
+### ❓ Problem Overview & Stakeholders
 Seen possesses vast amounts of data but lacks a centralized and analytical approach to uncover meaningful, actionable insights for business growth and efficiency.
 
 **Stakeholders:** CEO, Marketing Manager, Product Manager, Supply Chain Lead, Customer Experience Manager
 
 **KPIs:** Total Revenue, Conversion Rate, AOV, Return Rate
 
-### ?? Business Objectives
+### 🎯 Business Objectives
 - Improve forecasting and planning
 - Segment customers for better targeting
 - Optimize stock and product performance
@@ -39,19 +39,19 @@ Seen possesses vast amounts of data but lacks a centralized and analytical appro
 - Improve delivery
 - Use sentiment analysis for improvement
 
-### ?? Data Structure & Storage
+### 🧱 Data Structure & Storage
 - **Storage**: Azure Blob for raw data, SQL Server for processed views
 - **ER Diagram**: [View ER Diagram](https://drive.google.com/uc?export=view&id=1q-tnZfYB3987NqKL1hUVc1lurzDVUQGB)
 
-### ?? Executive Summary Highlights
+### 📈 Executive Summary Highlights
 - January: highest sales & lowest returns
 - BOX & NM: strong performance, no returns
 - Devolved Apps: high sales, low stock
 
 
-?? [Live Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiMjI5Y2ExYjItMjJlYS00MWUyLWFjNTUtYzMwYzY3MjM1YWZjIiwidCI6IjIxNzY5YTc2LTgxZTItNDcyNS1hODkzLWQ0MDQ5YjFhMDRlZSJ9)
+🔗 [Live Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiMjI5Y2ExYjItMjJlYS00MWUyLWFjNTUtYzMwYzY3MjM1YWZjIiwidCI6IjIxNzY5YTc2LTgxZTItNDcyNS1hODkzLWQ0MDQ5YjFhMDRlZSJ9)
 
-### ?? Dashboard Insights
+### 📊 Dashboard Insights
 
 #### 1. Overview
 - January = peak month
@@ -83,7 +83,7 @@ Seen possesses vast amounts of data but lacks a centralized and analytical appro
 - Avg rating = 3/5, mostly neutral
 - Investigate neutral & negative reviews
 
-### ? Recommendations Summary
+### ✅ Recommendations Summary
 - Replicate January campaigns
 - Focus on BOX & NM regions
 - Restock key items automatically
@@ -91,12 +91,12 @@ Seen possesses vast amounts of data but lacks a centralized and analytical appro
 - Streamline logistics & return processes
 ---
 
-## ?? Project 2: Return Status Prediction (E-Commerce Orders)
+## 📍 Project 2: Return Status Prediction (E-Commerce Orders)
 
-### ?? Objective
+### 🎯 Objective
 Predict the **return status** of an e-commerce order based on structured order features. The return status is classified into one of **four categories**: 0, 1, 2, or 3.
 
-### ??? Project Steps
+### 🛠️ Project Steps
 
 #### 1. Data Preparation
 - Analyze and clean the dataset (handling missing values, encoding categorical variables, etc.).
@@ -122,17 +122,17 @@ Train and compare multiple classification models:
 - **XGBoost**
 - **AdaBoost**
 
-#### ? Accuracy
+#### ✅ Accuracy
 - The best-performing model achieved an accuracy score of **approximately 91%**.
 
 ---
 
-## ?? Project 3: Sentiment Analysis
+## 📍 Project 3: Sentiment Analysis
 
-### ?? Objective
+### 🎯 Objective
 Build a machine learning model that classifies English sentences or reviews into either **positive** or **negative** sentiment.
 
-### ??? Project Steps
+### 🛠️ Project Steps
 
 #### 1. Text Preprocessing
 - Convert all text to lowercase.
@@ -147,13 +147,13 @@ Build a machine learning model that classifies English sentences or reviews into
 - Train a **Logistic Regression** model on the TF-IDF features.
 - Evaluate the model using accuracy and classification metrics.
 
-#### ? Accuracy
+#### ✅ Accuracy
 - The model achieved an accuracy score of **approximately 88%** on the test data.
 
 ---
 
 
-## ?? Project 4: ?? Web App Access
+## 📍 Project 4: 🌐 Web App Access
 
 [Deployment Video](https://drive.google.com/file/d/18i_nAo5uPkrotnc0EaiiidUT6c_43oh9/view?usp=sharing)
 
@@ -162,7 +162,7 @@ Build a machine learning model that classifies English sentences or reviews into
 [Presentation](https://gamma.app/docs/Seen-9vty7hr3dos1a53)
 
 
-## ?? Project Flow & Tools Used
+## 🔁 Project Flow & Tools Used
 | Phase               | Tools                   |
 |--------------------|--------------------------|
 | Data Storage       | Azure, SQL Server        |
@@ -172,6 +172,6 @@ Build a machine learning model that classifies English sentences or reviews into
 | Return Prediction  | Python                   |
 | Deployment         | Streamlit                |
 
-### ?? Team Members
+### 👥 Team Members
 ```
 Mohamed Gamal, Amira Hegazy, Shimaa Mohamed, Mohamed Ashraf, Kareem Zaki, Walid AbdElhameed
