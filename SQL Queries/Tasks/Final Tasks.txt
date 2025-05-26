@@ -1,0 +1,228 @@
+--Basic Queries
+
+--[1]-Calculate the total sales revenue from all orders?
+
+SELECT ROUND(SUM(total_amount),0) AS TOTAL_SALES FROM [dbo].[orders]
+-------------------------------------------------------------------------------------List the top 5 best-selling products by quantity sold.
+
+
+SELECT TOP 5 (p.id) as product_ID ,P.NAME, SUM( OD.quantity ) AS QUANTITY_SOLD
+FROM [dbo].[products] P
+JOIN [dbo].[order_details] OD ON P.id =OD.product_id
+GROUP BY (p.id), P.NAME
+ORDER BY QUANTITY_SOLD DESC
+
+
+-------------------------------------------------------------------------------------------
+--[2]- Identify customers with the highest number of orders.
+
+
+SELECT (C.ID) as customer_id ,
+      CONCAT( C.first_name,' ',
+	   C.last_name ) as full_name,
+	   COUNT(C.id) AS ORDER_COUNTS
+FROM orders O
+JOIN customers C ON O.customer_id =C.id
+GROUP BY CONCAT( C.first_name,' ',
+	   C.last_name ) , C.id, C.first_name,C.last_name
+ORDER BY ORDER_COUNTS DESC
+
+-------------------------------------------------------------------------------------[3]- Generate an alert for products with stock quantities below 20 units.
+
+SELECT id,
+      name,
+	  stock_quantity 
+FROM [dbo].[products]
+WHERE stock_quantity < 20
+ORDER BY stock_quantity 
+------------------------------------------------------------------------------------
+
+--[4]- Determine the percentage of orders that used a discount.
+
+WITH discounted_orders AS (
+    SELECT DISTINCT o.id AS order_id
+    FROM order_details od
+    JOIN products ps ON od.product_id = ps.id
+    JOIN orders o ON od.order_id = o.id
+    LEFT JOIN discounts dp 
+        ON dp.product_id = od.product_id 
+        AND dp.is_active = 1
+        AND o.order_date BETWEEN dp.start_date AND dp.end_date
+    LEFT JOIN discounts dc 
+        ON dp.id IS NULL 
+        AND dc.product_id IS NULL  
+        AND dc.is_active = 1
+        AND ps.category_id = dc.category_id 
+        AND o.order_date BETWEEN dc.start_date AND dc.end_date
+		    WHERE dp.id IS NOT NULL OR dc.id IS NOT NULL 
+
+),
+total_orders AS (
+    SELECT COUNT(*) AS total_count FROM orders
+),
+discounted_order_count AS (
+    SELECT COUNT(*) AS discount_count FROM discounted_orders
+)
+
+SELECT 
+    t.total_count AS count_total_orders,
+    d.discount_count AS count_discountorders,
+    CAST(d.discount_count AS FLOAT) / NULLIF(t.total_count, 0) AS percentage_orders_with_discounted_products
+FROM total_orders t
+CROSS JOIN discounted_order_count d;
+
+---------------------------------------------------------------------
+
+--[5]- Calculate the average rating for each product.
+
+SELECT 
+    P.name,p.id,
+    ROUND(AVG(R.rating), 2) AS avg_rating
+FROM Reviews R
+JOIN Products P ON R.product_id = P.id
+GROUP BY P.name, p.id ;
+
+
+
+--------------------------------------------------------------------
+
+--Advanced Queries
+
+--[6] Compute the 30-day customer retention rate after their first purchase
+
+
+
+with first_order as (
+select customer_id , min(order_date) as first_order_date
+from orders 
+group by customer_id ),
+FollowUp_Orders AS (
+    SELECT  o.customer_id,COUNT(*) AS Retained
+    FROM Orders o
+    JOIN first_order f ON o.customer_id = f.Customer_ID
+    WHERE o.order_date > f.first_order_date AND o.order_date <= DATEADD(day, 30, f.first_order_date)
+    GROUP BY o.customer_id 
+)SELECT 
+    COUNT(f.Customer_ID) AS TotalCustomers,
+    COUNT(fo.customer_id) AS RetainedCustomers,
+    CAST(COUNT(fo.customer_id) AS FLOAT) / COUNT(f.customer_id) * 100 AS RetentionRate_30_Days
+FROM first_order f
+LEFT JOIN FollowUp_Orders fo ON f.customer_id = fo.customer_id
+----------------------------------------------------------------------------------------------
+
+--[2] Recommend products frequently bought together with items in customer wishlists
+
+WITH wishlist_products AS (
+    SELECT customer_id, product_id AS wishlist_product
+    FROM Wishlists
+),
+
+orders_by_wishlist_users AS (
+    SELECT o.id AS order_id, o.customer_id, wp.wishlist_product
+    FROM Orders o
+    JOIN wishlist_products wp 
+        ON o.customer_id = wp.customer_id 
+),
+
+products_in_orders AS (
+    SELECT o.order_id, o.customer_id, o.wishlist_product, od.product_id AS purchased_product
+    FROM orders_by_wishlist_users o
+    JOIN order_details od ON o.order_id = od.order_id
+)
+
+SELECT 
+    wp.name AS wishlist_product_name,
+    pp.name AS co_bought_product_name,
+    COUNT(*) AS frequency
+FROM products_in_orders poi
+JOIN Products wp ON poi.wishlist_product = wp.id
+JOIN Products pp ON poi.purchased_product = pp.id
+WHERE poi.wishlist_product <> poi.purchased_product
+GROUP BY wp.name, pp.name
+ORDER BY frequency DESC;
+
+
+---------------------------------------------------------------------
+--[3] Track inventory turnover trends using a 30-day moving average.
+
+SELECT 
+    od.product_id,
+    o.order_date,
+    (
+        SELECT SUM(od2.quantity)
+        FROM order_details od2
+        JOIN orders  o2 ON od2.order_id = o2.id
+        WHERE od2.product_id = od.product_id
+          AND o2.order_date BETWEEN DATEADD(DAY, -29, o.order_date) AND o.order_date
+    ) AS moving_30_day_qty_sold
+FROM order_details od
+JOIN orders o ON od.order_id = o.id
+ORDER BY od.product_id, o.order_date;
+
+
+------------------------------------------------------------------------
+
+
+--[4] Identify customers who have purchased every product in a specific category.
+
+WITH category_counts AS (
+    SELECT category_id, COUNT(DISTINCT id) AS total_products
+    FROM Products
+    GROUP BY category_id
+),
+
+customer_category_purchases AS (
+    SELECT o.customer_id, p.category_id, COUNT(DISTINCT od.product_id) AS purchased
+    FROM Orders o
+    JOIN [dbo].[order_details] od ON o.id = od.order_id
+    JOIN Products p ON od.product_id = p.id
+    GROUP BY o.customer_id, p.category_id
+)
+
+SELECT ccp.customer_id, ccp.category_id
+FROM customer_category_purchases ccp
+JOIN category_counts cc ON ccp.category_id = cc.category_id
+WHERE ccp.purchased = cc.total_products;
+
+
+----------------------------------------------------
+--[5] Find pairs of products commonly bought together in the same order.
+
+SELECT
+a.product_id AS product_1_id,
+p1.name AS product_1_name,
+b.product_id AS product_2_id,
+p2.name AS product_2_name,
+COUNT(*) AS pair_count
+FROM order_details a
+JOIN order_details b
+ON a.order_id = b.order_id
+AND a.product_id < b.product_id
+JOIN Products p1 ON a.product_id = p1.id
+JOIN Products p2 ON b.product_id = p2.id
+GROUP BY a.product_id, p1.name, b.product_id, p2.name
+ORDER BY pair_count DESC;
+-------------------------------------------------------
+--[6] Calculate the time taken to deliver orders in days.
+
+SELECT
+o.id AS order_id,
+o.customer_id,
+o.order_date,
+s.shipping_date,
+DATEDIFF(DAY, o.order_date, s.shipping_date) AS delivery_time_days
+FROM Orders o
+JOIN Shipping s ON o.id = s.order_id
+WHERE s.status = 'delivered'
+ORDER BY delivery_time_days DESC;
+=======================================================
+
+
+-- sales by delivered 
+SELECT status , ROUND(SUM(total_amount),0) AS TOTAL_SALES FROM [dbo].[orders]
+group by status 
+having status = 'delivered';
+-- by total status
+SELECT status , ROUND(SUM(total_amount),0) AS TOTAL_SALES FROM [dbo].[orders]
+group by status 
+order by status desc;
