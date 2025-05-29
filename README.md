@@ -123,7 +123,7 @@ Train and compare multiple classification models:
 - **AdaBoost**
 
 #### ✅ Accuracy
-- The best-performing model achieved an accuracy score of **approximately 91%**.
+- The best-performing model achieved an accuracy score of **approximately 98%**.
 
 ---
 
